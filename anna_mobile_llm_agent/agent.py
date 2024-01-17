@@ -133,6 +133,10 @@ class MobileLLMAgent:
         if len(new_logs) > 0:
             self.write_to_logs(new_logs)
 
+        if re.findall(r'<exit>', system_actions):
+            print('LLM agent is closing the session.')
+            exit()
+
         return json.dumps(execution_result)
 
     def execute_model_actions(self, model_actions: str):
