@@ -16,7 +16,7 @@ pip install -r requirements.txt
 #### Run Android emulator:
 1. Install Android Studio
 2. Install ADB tool
-3. Download the desired APK file (the agent can work with in any app)
+3. Download the desired APK file (the agent can work with in any app) or install the app from the Google Play Store
 4. Run the app in the emulator and find the path where the ADB is installed
 
 #### Run the agent:
@@ -31,6 +31,15 @@ Once there find "Invoices" functionality of the app and go there. Once you found
 In ANNA you can start invoice creation via chat or via the "Invoices" functionality.
 Please start the creation from the "Invoices" functionality, and you will be redirected to the chat eventually.
 Details of the invoice are not important, but enter at least 1 detail using the chat input
+```
+
+```
+Instagram story creation example.
+
+Please create a new story. 
+Since it is the emulator it will have some mock recording of the camera (strange yellow-green image). 
+The story should be accessible only for my 'close friends' and it should have a sample camera shot. 
+This shot should be edited the following was: add the text "HELLO WORLD" in the middle
 ```
 4. The agent will start the interaction with the app and will try to achieve the goal and will save logs/goals/results file in the `data` folder
 
