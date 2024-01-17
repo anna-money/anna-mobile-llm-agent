@@ -34,5 +34,9 @@ Details of the invoice are not important, but enter at least 1 detail using the 
 ```
 4. The agent will start the interaction with the app and will try to achieve the goal and will save logs/goals/results file in the `data` folder
 
-### Task recording example:
+### LLM Agent in action video examples:
+#### ANNA app. Invoice creation example
 [![Watch the video](https://img.youtube.com/vi/8X7OSHMQv38/0.jpg)](https://youtu.be/8X7OSHMQv38)
+
+#### Instagram. Story creation example
+[![Watch the video](https://img.youtube.com/vi/6_5oIGbe1Bc/0.jpg)](https://youtu.be/6_5oIGbe1Bc)
