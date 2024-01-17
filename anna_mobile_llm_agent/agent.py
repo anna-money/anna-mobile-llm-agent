@@ -73,7 +73,7 @@ class MobileLLMAgent:
             json.dump(logs, f)
 
     @staticmethod
-    def read_from_memory(memory_filepath: list, key: str):
+    def read_from_memory(memory_filepath: str, key: str):
         with open(memory_filepath, 'r') as f:
             memory = json.load(f)
         return memory if memory and memory.get(key) else None
@@ -127,7 +127,8 @@ class MobileLLMAgent:
             results = self.read_from_memory(RESULTS_PATH, 'results')
             new_log = f'"current_timestamp": {datetime.now()}, Retrieved results.'
             new_logs.append(new_log)
-            execution_result['results'] = results['results'] if results and results.get('results') else "No results found."
+            execution_result['results'] = results['results'] \
+                if results and results.get('results') else "No results found."
 
         if len(new_logs) > 0:
             self.write_to_logs(new_logs)
@@ -195,9 +196,9 @@ class MobileLLMAgent:
         print("Sending to GPT-4 Vision API...")
         if len(self.chat_history) > CONTEXT_WINDOW_SIZE:
             context_window = [
-                                 self.chat_history[0], # System prompt
-                                 self.chat_history[1] # User question
-                             ] + self.chat_history[-(CONTEXT_WINDOW_SIZE - 1):] # Last N messages
+                                 self.chat_history[0],  # System prompt
+                                 self.chat_history[1]  # User question
+                             ] + self.chat_history[-(CONTEXT_WINDOW_SIZE - 1):]  # Last N messages
         else:
             context_window = self.chat_history
 

@@ -1,6 +1,10 @@
 ## Mobile LLM Agent
 
-Installation:
+This project is a proof of concept of the LLM agent that can interact with the Android app via ADB tool and achieve the goal defined by the user.
+
+The novelty of the project is that it is possible to achieve significantly better results than other mobile agents due to the fact that the LLM simultaneously sees a screenshot (image object) and the current screen layout (xml object obtained using adb tool).
+
+#### Installation:
 1. Export your Open AI KEY 
 `export OPENAI_API_KEY=sk-4U7...`
 2. Install the requirements
@@ -9,13 +13,13 @@ python3.11 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run Android emulator:
+#### Run Android emulator:
 1. Install Android Studio
 2. Install ADB tool
 3. Download the desired APK file (the agent can work with in any app)
 4. Run the app in the emulator and find the path where the ADB is installed
 
-Run the agent:
+#### Run the agent:
 1. Remove the `data` before running the agent if you want to start from scratch (recommended).
 2. `python3 anna_mobile_llm_agent/run_agent.py --adb_filepath=platform-tools/adb`
 3. The agent will ask you to define the goal for the agent, enter the goal and press enter
