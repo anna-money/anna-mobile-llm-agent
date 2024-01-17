@@ -16,8 +16,9 @@ Run Android emulator:
 4. Run the app in the emulator and find the path where the ADB is installed
 
 Run the agent:
-1. `python3 anna_mobile_llm_agent/run_agent.py --adb_filepath=platform-tools/adb` 
-2. The agent will ask you to define the goal for the agent, enter the goal and press enter
+1. Remove the `data` before running the agent if you want to start from scratch (recommended).
+2. `python3 anna_mobile_llm_agent/run_agent.py --adb_filepath=platform-tools/adb`
+3. The agent will ask you to define the goal for the agent, enter the goal and press enter
 ```
 Invoice creation example.
 
@@ -27,7 +28,7 @@ In ANNA you can start invoice creation via chat or via the "Invoices" functional
 Please start the creation from the "Invoices" functionality, and you will be redirected to the chat eventually.
 Details of the invoice are not important, but enter at least 1 detail using the chat input
 ```
-3. The agent will start the interaction with the app and will try to achieve the goal and will save logs/goals/results file in the `data` folder
+4. The agent will start the interaction with the app and will try to achieve the goal and will save logs/goals/results file in the `data` folder
 
 ### Task recording example:
 [![Watch the video](https://img.youtube.com/vi/8X7OSHMQv38/0.jpg)](https://youtu.be/8X7OSHMQv38)
