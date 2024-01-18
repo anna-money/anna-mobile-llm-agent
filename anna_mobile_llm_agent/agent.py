@@ -156,10 +156,15 @@ class MobileLLMAgent:
         else:
             actions = [model_actions]
 
+        new_logs = []
         for action in actions:
-            execute_action(action.strip(), self.adb_filepath)
+            log = execute_action(action.strip(), self.adb_filepath)
+            if log:
+                new_logs.append(f'"current_timestamp": {datetime.now()}, {log}')
 
-        new_logs = [f'"current_timestamp": {datetime.now()}, Executed agent actions: {model_actions}']
+        final_status = f'"current_timestamp": {datetime.now()}, Executed agent actions: {model_actions}'
+        new_logs.append(final_status)
+
         self.write_to_logs(new_logs)
 
     def append_message_to_history(
