@@ -5,7 +5,11 @@ import re
 
 from prompts import SYSTEM_PROMPT
 from datetime import datetime
-from utils import get_screen_layout, build_image_message, execute_action, IMAGE_FILEPATH
+from utils import (
+    get_screen_layout, build_image_message,
+    execute_action, IMAGE_FILEPATH,
+    execute_popen_command
+)
 
 DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 LOGS_PATH = os.path.join(DATA_PATH, 'logs.json')
@@ -17,19 +21,21 @@ LAST_N_HISTORY_OBJECTS = 3
 
 
 class MobileLLMAgent:
-    def __init__(self, adb_filepath: str):
+    def __init__(self, llm_model_name: str, adb_filepath: str, target_app_screen_id=None):
         self.client = openai.Client()
+        self.llm_model_name = llm_model_name
         self.chat_history = []
         self.thoughts = []
         self.initial_user_instruction = None
         self.adb_filepath = adb_filepath
+        self.target_app_screen_id = target_app_screen_id
 
     def call_llm_api(self, messages):
         response = self.client.chat.completions.create(
-            model="gpt-4-vision-preview",
+            model=self.llm_model_name,
             messages=messages,
-            max_tokens=2000,
-            temperature=0.0
+            max_tokens=4096,
+            temperature=0.3
         )
         return response.choices[0].message.content
     
@@ -130,6 +136,10 @@ class MobileLLMAgent:
             execution_result['results'] = results['results'] \
                 if results and results.get('results') else "No results found."
 
+        elif re.findall('<launch_target_app>', system_actions):
+            print(f"Launching target app")
+            execute_popen_command([self.adb_filepath, 'shell', 'am', 'start', '-n', self.target_app_screen_id])
+
         if len(new_logs) > 0:
             self.write_to_logs(new_logs)
 
@@ -154,7 +164,8 @@ class MobileLLMAgent:
 
     def append_message_to_history(
             self, user_text: str, layout: dict, role: str,
-            append_image: bool = True, remove_images_from_previous_user_messages: bool = False):
+            append_image: bool = True,
+            remove_images_from_previous_user_messages: bool = False):
 
         if role == 'user':
             new_replica = {
@@ -197,7 +208,6 @@ class MobileLLMAgent:
         screen_layout = get_screen_layout(self.adb_filepath)
         self.append_message_to_history("", screen_layout, 'assistant', append_image=True)
 
-        print("Sending to GPT-4 Vision API...")
         if len(self.chat_history) > CONTEXT_WINDOW_SIZE:
             context_window = [
                                  self.chat_history[0],  # System prompt
@@ -206,6 +216,7 @@ class MobileLLMAgent:
         else:
             context_window = self.chat_history
 
+        print("Sending to GPT-4 Vision API...")
         response = self.call_llm_api(context_window)
         print(f"🤔: {response}")
         self.chat_history.append({"role": "assistant", "content": response})

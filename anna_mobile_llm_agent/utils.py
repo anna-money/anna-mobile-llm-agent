@@ -2,6 +2,7 @@ import os
 import re
 import base64
 import xmltodict
+from datetime import datetime
 
 from time import sleep
 from subprocess import Popen, PIPE, check_output
@@ -121,6 +122,14 @@ def execute_action(action, adb_path=os.getenv('ADB_PATH')):
     elif action == '<delete_all_text>':
         print(f"Deleting all text")
         execute_popen_command([adb_path, 'shell', 'input', 'keyevent', '--longpress', BACKSPACE_KEYCODE_REPEATED])
+
+    elif action.startswith('<save_screenshot>'):
+        filename = re.findall(r"filename:'(.*?)'", action)[0]
+        print(f"Saving screenshot: {filename}")
+        process_screenshot = check_output([adb_path, 'exec-out', 'screencap', '-p'])
+        filename = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{filename}.png"
+        with open(os.path.join(DATA_PATH, filename), "wb") as newFile:
+            newFile.write(process_screenshot)
 
     # Wait until everything is happened on the screen after the action is executed
     sleep(TIMEOUT_TO_WAIT_FOR_SCREEN_TO_UPDATE_SECONDS)
