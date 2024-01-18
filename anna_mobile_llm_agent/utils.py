@@ -50,7 +50,7 @@ def build_image_message(image_path: str = None):
         "type": "image_url",
         "image_url": {
           "url": f"data:image/png;base64,{encoded_string}",
-          "detail": "high"
+          "detail": "low"
         }
     }
     return image_message
@@ -99,17 +99,21 @@ def execute_action(action, adb_path=os.getenv('ADB_PATH')):
         execute_popen_command([adb_path, 'shell', 'input', 'swipe', mid_x, y1, mid_x, y2])
 
     elif action.startswith('<swipe_'):
+        swipe_time = '500'
         if re.findall(r'\[(.*?)\]', action):
             left_down, right_upper = re.findall(r'\[(.*?)\]', action)
             left_down, right_upper = left_down.split(','), right_upper.split(',')
             x1, y1, x2, y2 = left_down[0], left_down[1], right_upper[0], right_upper[1]
         else:
-            x1, y1, x2, y2 = 300, 100, 300, 300
+            if '<swipe_left>' in action:
+                x1, y1, x2, y2 = '120', '500', '650', '500'
+            elif '<swipe_right>' in action:
+                x1, y1, x2, y2 = '600', '500', '100', '500'
 
         # invert swipe for the convenience of the user
         x1, y1, x2, y2 = x2, y2, x1, y1
         print(f"Swiping from {x1},{y1} to {x2},{y2}")
-        execute_popen_command([adb_path, 'shell', 'input', 'swipe', str(x1), str(y1), str(x2), str(y2)])
+        execute_popen_command([adb_path, 'shell', 'input', 'swipe', str(x1), str(y1), str(x2), str(y2), swipe_time])
 
     elif action == '<back>':
         execute_popen_command([adb_path, 'shell', 'input', 'keyevent', 'KEYCODE_BACK'])

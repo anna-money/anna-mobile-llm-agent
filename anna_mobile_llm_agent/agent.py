@@ -165,13 +165,10 @@ class MobileLLMAgent:
     def append_message_to_history(
             self, user_text: str, layout: dict, role: str,
             append_image: bool = True,
-            remove_images_from_previous_user_messages: bool = False):
+            optimize_history_objects: bool = True):
 
         if role == 'user':
-            new_replica = {
-                "text": user_text,
-                "layout": layout
-            }
+            new_replica = {"text": user_text}
         else:
             logs = self.read_from_memory(LOGS_PATH, 'logs')
             results = self.read_from_memory(RESULTS_PATH, 'results')
@@ -196,11 +193,15 @@ class MobileLLMAgent:
         if append_image:
             new_message['content'].append(build_image_message(IMAGE_FILEPATH))
 
-        if remove_images_from_previous_user_messages:
-            # Remove the images from the previous user messages keeping it only in the last one
+        clean_history = []
+        if optimize_history_objects:
+            # Remove all the messages that are not needed for the model to make context window lighter
+            # It removes all 'assistant' messages that contain images/layout objects
             for message in self.chat_history:
-                if message['role'] == 'user':
-                    message['content'] = [content for content in message['content'] if content['type'] != 'image_url']
+                if ((message['role'] in ['system', 'user']) or
+                        (message['role'] == 'assistant' and isinstance(message['content'], str))):
+                    clean_history.append(message)
+            self.chat_history = clean_history
 
         self.chat_history.append(new_message)
 
