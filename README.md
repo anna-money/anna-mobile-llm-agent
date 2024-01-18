@@ -22,7 +22,7 @@ pip install -r requirements.txt
 #### Run the agent:
 1. Remove the `data` before running the agent if you want to start from scratch (recommended).
 2. `python3 anna_mobile_llm_agent/run_agent.py --adb_filepath=platform-tools/adb`
-3. The agent will ask you to define the goal for the agent, enter the goal and press enter
+3. The agent will ask you to define the goal for the agent, enter the goal and press enter. Examples of the goals are below:
 ```
 Instagram story creation example.
 
@@ -31,8 +31,21 @@ Since it is the emulator it will have some mock recording of the camera (strange
 The story should be accessible only for my 'close friends' and it should have a sample camera shot. 
 This shot should be edited the following was: add the text "HELLO WORLD" in the middle
 ```
+
 ```
-Invoice creation example.
+ANNA app. Auto documentation example.
+
+Your goal is to learn the settings of the ANNA application and prepare useful documentation for our team.
+Not all of our employees understand the specifics of how our clients interact with the application, since registration requires installing the latest version and passing KYB verification.
+We want to fill this gap and prepare a document that can answer our questions about how various functions work in the application.
+The expected document will be compiled from the results file.
+1. Find the Settings section in the application
+2. Improvise, learn and explore all the important screens / buttons / inputs and functions inside the Settings section (open sub-screens, scroll to explore more).
+3. The documentation must be detailed (100-400 words per screen, not less). We need screenshots of screens, save them using action <save_screenshot> (do not create duplicate images), create a documentation and save it in the results in the following format: Title, General description of the screen, purpose, actions that the client can do in this screen to achieve a certain use case, the notes about specific points that it will be useful to display in the documentation.
+```
+
+```
+ANNA app. Invoice creation example.
 
 Go inside the briefcase/app menu (grey briefcase icon in the middle, bottom part of the screen).
 Once there find "Invoices" functionality of the app and go there. Once you found it you will need to create a new invoice with some details.
