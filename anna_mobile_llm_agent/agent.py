@@ -17,7 +17,7 @@ GOALS_PATH = os.path.join(DATA_PATH, 'goals.json')
 RESULTS_PATH = os.path.join(DATA_PATH, 'results.json')
 
 CONTEXT_WINDOW_SIZE = 6
-LAST_N_HISTORY_OBJECTS = 3
+LAST_N_HISTORY_OBJECTS = 5
 
 
 class MobileLLMAgent:
@@ -240,7 +240,7 @@ class MobileLLMAgent:
             system_response = self.execute_system_actions(response_json['system_action'])
             if system_response:
                 post_system_response = {
-                    "role": "assistant",
+                    "role": "system",
                     "content": [
                         {
                             "type": "text",
