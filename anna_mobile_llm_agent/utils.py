@@ -89,15 +89,15 @@ def execute_action(action, adb_path=os.getenv('ADB_PATH')) -> str:
         bounds = bounds[0].split(',') + bounds[1].split(',')
         x = (int(bounds[0]) + int(bounds[2])) / 2
         y = (int(bounds[1]) + int(bounds[3])) / 2
-        print(f"Tapping on {x},{y}")
+        action_log = f"Tapped on {x},{y}"
         execute_popen_command([adb_path, 'shell', 'input', 'tap', str(x), str(y)])
 
     elif action.startswith('<scroll_'):
         point_from, point_to = re.findall(r'\[(.*?)\]', action)
         point_from, point_to = point_from.split(','), point_to.split(',')
         x1, y1, x2, y2 = point_from[0], point_from[1], point_to[0], point_to[1]
-        mid_x = str(abs(int(x1) - int(x2)) / 2)
-        print(f"Scrolling from {mid_x},{y1} to {mid_x},{y2}")
+        mid_x = str(max(abs(int(x1) - int(x2)) / 2, 100))
+        action_log = f"Scrolled from {mid_x},{y1} to {mid_x},{y2}"
         execute_popen_command([adb_path, 'shell', 'input', 'swipe', mid_x, y1, mid_x, y2])
 
     elif action.startswith('<swipe_'):
@@ -114,19 +114,20 @@ def execute_action(action, adb_path=os.getenv('ADB_PATH')) -> str:
 
         # invert swipe for the convenience of the user
         x1, y1, x2, y2 = x2, y2, x1, y1
-        print(f"Swiping from {x1},{y1} to {x2},{y2}")
+        action_log = f"Swiped from {x1},{y1} to {x2},{y2}"
         execute_popen_command([adb_path, 'shell', 'input', 'swipe', str(x1), str(y1), str(x2), str(y2), swipe_time])
 
     elif action == '<back>':
+        action_log = f"Pressed back button"
         execute_popen_command([adb_path, 'shell', 'input', 'keyevent', 'KEYCODE_BACK'])
 
     elif action.startswith('<input_text>'):
         text = re.findall(r"text:'(.*?)'", action)[0]
-        print(f"Inputting text: {text}")
+        action_log = f"Entered text: {text}"
         execute_popen_command([adb_path, 'shell', 'input', 'text', f'"{text}"'])
 
     elif action == '<delete_all_text>':
-        print(f"Deleting all text")
+        action_log = "Deleted all text"
         execute_popen_command([adb_path, 'shell', 'input', 'keyevent', '--longpress', BACKSPACE_KEYCODE_REPEATED])
 
     elif action.startswith('<save_screenshot>'):
@@ -134,12 +135,13 @@ def execute_action(action, adb_path=os.getenv('ADB_PATH')) -> str:
             action_log = "ERROR: filename is not specified for <save_screenshot> action"
         else:
             filename = re.findall(r"filename:'(.*?)'", action)[0]
-            print(f"Saving screenshot: {filename}")
+            action_log = f"Saved screenshot: {filename}"
             process_screenshot = check_output([adb_path, 'exec-out', 'screencap', '-p'])
             filename = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_{filename}.png"
             with open(os.path.join(DATA_PATH, filename), "wb") as newFile:
                 newFile.write(process_screenshot)
 
+    print(action_log)
     # Wait until everything is happened on the screen after the action is executed
     sleep(TIMEOUT_TO_WAIT_FOR_SCREEN_TO_UPDATE_SECONDS)
 
